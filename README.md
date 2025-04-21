@@ -4,6 +4,8 @@ This project contains a basic 2D simulation of a drone using Python.
 
 The goal is to build a sandbox environment with different levels of modelling complexity, in order to test different control strategies and study the system dynamics.
 
+![2d drone trajectory](https://github.com/fpelogia/drone-simulation/blob/main/trajectory.gif?raw=true)
+
 ## Features
 
 - Models the translational and rotational dynamics of a 2D drone
