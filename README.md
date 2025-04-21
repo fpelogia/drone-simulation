@@ -17,25 +17,22 @@ The goal is to build a sandbox environment with different levels of modelling co
 The drone is modeled using the following equations:
 
 - Horizontal acceleration:
-  $$
-  \ddot{x} = -\frac{(F_1 + F_2) \cdot \sin(\theta)}{m}
-  $$
+  
+  $`\ddot{x} = -\frac{(F_1 + F_2) \cdot \sin(\theta)}{m}`$
 
 - Vertical acceleration:
-  $$
-  \ddot{y} = \frac{(F_1 + F_2) \cdot \cos(\theta)}{m} - g
-  $$
+
+  $`\ddot{y} = \frac{(F_1 + F_2) \cdot \cos(\theta)}{m} - g`$
 
 - Angular acceleration:
-  $$
-  \ddot{\theta} = \frac{(F_2 - F_1) \cdot L}{2I}
-  $$
+  
+  $`\ddot{\theta} = \frac{(F_2 - F_1) \cdot L}{2I}`$
 
 where:
 
-- $ F_1 $, $ F_2 $: Thrust from left and right motors
-- $ \theta $: Drone orientation
-- $ L $: Distance between motors
-- $ m $: Drone mass
-- $ I $: Moment of inertia
-- $ g $: Gravitational acceleration
+- $` F_1 `$, $` F_2 `$: Thrust from left and right motors
+- $` \theta `$: Drone orientation
+- $` L `$: Distance between motors
+- $` m `$: Drone mass
+- $` I `$: Moment of inertia
+- $` g `$: Gravitational acceleration
