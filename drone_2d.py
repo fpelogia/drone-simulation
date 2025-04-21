@@ -151,5 +151,7 @@ def plot_trajectory(x, y, theta, t_end, params):
     ani.save('trajectory.gif', writer='pillow')
     plt.show()
 
+    return ani
+
 if __name__ == '__main__':
     main()
