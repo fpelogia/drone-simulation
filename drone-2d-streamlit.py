@@ -9,7 +9,15 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import streamlit as st
 import streamlit.components.v1 as components
-from drone_2d import u, drone_dynamics, plot_trajectory
+
+import sys
+from pathlib import Path
+src_path = Path(__file__).resolve().parent / "src"
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
+from dynamics import u, drone_dynamics
+from plots import plot_trajectory
 
 def main():
     st.set_page_config(layout="wide")    
