@@ -16,7 +16,7 @@ src_path = Path(__file__).resolve().parent / "src"
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from dynamics import u, drone_dynamics
+from dynamics import drone_dynamics
 from plots import plot_trajectory
 
 def main():
@@ -38,28 +38,12 @@ def main():
         g = st.slider("Gravity (m/s^2)", 0.5, 10.0, g, 0.5) # gravity (m/s^2)
         st.write("Moment of Inertia (kg*m^2):", (1/12) * m * L**2)
 
-        st.write("Inputs (u(t))")
-        st.latex(r"u(t) = \begin{bmatrix} F_1(t) \\ F_2(t) \end{bmatrix}")
-
     left, right = st.columns(2)
     with left:
-        input_type = st.radio(
-            "Inputs (u(t))",
-            ["***Predefined***", "***User defined***"],
-            captions=[
-                "Predefined trajectory (example)",
-                "Manually provide engine thrust forces",
-            ],
-            horizontal=True)
+        pass
     with right:
-        if(input_type == '***Predefined***'):
-            F1 = None
-            F2 = None
-        else:
-            F1 = st.slider("Left Engine Thrust Force (N)", 0.0, 40.0, 15.0, 0.1)
-            F2 = st.slider("Right Engine Thrust Force (N)", 0.0, 40.0, 15.0, 0.1)
 
-        params = {"m": m, "L": L, "g": g, "I": I, "F1": F1, "F2": F2}
+        params = {"m": m, "L": L, "g": g, "I": I}
 
         # initial conditions
         x0 = 0
@@ -88,7 +72,7 @@ def main():
 
     with col2:
         # plot trajectory
-        ani = plot_trajectory(x, y, theta, t_end, params)
+        ani = plot_trajectory(x, y, theta, t, params)
         components.html(ani.to_jshtml(), height=600)
         
     with col3:

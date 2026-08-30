@@ -25,7 +25,7 @@ def main():
 
     # time interval
     t_start = 0
-    t_end = 6
+    t_end = 10
     t = np.linspace(t_start, t_end, 100)
 
     # solve ODE
@@ -39,7 +39,7 @@ def main():
     plot_results(t, x, y, theta)
 
     # plot trajectory
-    plot_trajectory(x, y, theta, t_end, params)
+    plot_trajectory(x, y, theta, t, params)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from dynamics import target_traj
+
+from controllers.controller import target_traj
 
 # plot results
 def plot_results(t, x, y, theta):
@@ -28,15 +29,18 @@ def plot_results(t, x, y, theta):
     axs[1, 1].set_xlabel("x (m)")
     axs[1, 1].set_ylabel("y (m)")
 
-    # traj_x, traj_y = target_traj(t)
-    # axs[1, 1].plot(traj_x, traj_y, linestyle='--')
+    traj_x, traj_y = target_traj(t)
+    axs[1, 1].plot(traj_x, traj_y, linestyle='--')
 
 
     plt.savefig("results.png")
     plt.show()
 
 # Plot trajectory (animated)
-def plot_trajectory(x, y, theta, t_end, params):
+def plot_trajectory(x, y, theta, t, params):
+
+    t_end = t[-1]
+    
     # unpack parameters
     m, I, L, g = params["m"], params["I"], params["L"], params["g"]
 
@@ -45,11 +49,8 @@ def plot_trajectory(x, y, theta, t_end, params):
     traj_plot, = ax.plot(x, y)
     patch = ax.add_patch(plt.Rectangle((x[0] - L/2, y[0]-0.1), L, 0.2, angle=theta[0]*(180/np.pi), color='r'))
 
-
-    # [TO-DO] - Improve this... get t array directly
-    # t = np.linspace(0, t_end, 100)
-    # traj_x, traj_y = target_traj(t)
-    # ax.plot(traj_x, traj_y, linestyle='--')
+    traj_x, traj_y = target_traj(t)
+    ax.plot(traj_x, traj_y, linestyle='--')
 
     plt.xlabel("x (m)")
     plt.ylabel("y (m)")
