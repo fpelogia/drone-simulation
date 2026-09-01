@@ -1,4 +1,5 @@
 streamlit
+streamlit[pdf]
 numpy
 matplotlib
 scipy

@@ -36,6 +36,8 @@ def plot_results(t, x, y, theta):
     plt.savefig("results.png")
     plt.show()
 
+    return fig
+
 # Plot trajectory (animated)
 def plot_trajectory(x, y, theta, t, params):
 

@@ -1,6 +1,7 @@
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from controllers.controller import ControllerFSF
 from dynamics import drone_dynamics
 from plots import plot_results, plot_trajectory
 
@@ -28,8 +29,11 @@ def main():
     t_end = 10
     t = np.linspace(t_start, t_end, 100)
 
+    # Instantiate the controller
+    controller = ControllerFSF(type='lqr')
+
     # solve ODE
-    sol = solve_ivp(drone_dynamics, (t_start, t_end), z0, t_eval=t, args=(params,), rtol=1e-3, atol=1e-6)
+    sol = solve_ivp(drone_dynamics, (t_start, t_end), z0, t_eval=t, args=(params, controller), rtol=1e-3, atol=1e-6)
     print(sol)
 
     # unpack solution
