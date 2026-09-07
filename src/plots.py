@@ -2,10 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-from controllers.controller import target_traj
 
 # plot results
-def plot_results(t, x, y, theta):
+def plot_results(t, x, y, theta, target_fn):
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     plt.subplots_adjust(hspace=0.5)
 
@@ -29,7 +28,7 @@ def plot_results(t, x, y, theta):
     axs[1, 1].set_xlabel("x (m)")
     axs[1, 1].set_ylabel("y (m)")
 
-    traj_x, traj_y = target_traj(t)
+    traj_x, traj_y = target_fn(t)
     axs[1, 1].plot(traj_x, traj_y, linestyle='--')
 
 
@@ -39,7 +38,7 @@ def plot_results(t, x, y, theta):
     return fig
 
 # Plot trajectory (animated)
-def plot_trajectory(x, y, theta, t, params):
+def plot_trajectory(x, y, theta, t, params, target_fn):
 
     t_end = t[-1]
     
@@ -51,7 +50,7 @@ def plot_trajectory(x, y, theta, t, params):
     traj_plot, = ax.plot(x, y)
     patch = ax.add_patch(plt.Rectangle((x[0] - L/2, y[0]-0.1), L, 0.2, angle=theta[0]*(180/np.pi), color='r'))
 
-    traj_x, traj_y = target_traj(t)
+    traj_x, traj_y = target_fn(t)
     ax.plot(traj_x, traj_y, linestyle='--')
 
     plt.xlabel("x (m)")

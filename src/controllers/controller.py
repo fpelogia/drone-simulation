@@ -8,7 +8,7 @@ import numpy as np
 
 
 def target_traj(t):
-    return 20 * np.sin(t), 5 * t
+    return np.sin(t) + t, 2 * t
 
 class Controller(ABC):
     @abstractmethod
@@ -26,8 +26,9 @@ class Controller(ABC):
 class ControllerFSF(Controller):
     """Full State Feedback Controller for the 2D-Drone."""
 
-    def __init__(self, type='lqr', gain_matrix=None):
+    def __init__(self, type='lqr', target_fn=target_traj, gain_matrix=None):
         self.type = type
+        self.target_fn = target_fn
 
         if gain_matrix is not None:
             # If a specific gain matrix is provided, use it
@@ -35,7 +36,7 @@ class ControllerFSF(Controller):
         elif type == 'lqr':
             print('LQR FSF')
             # If LQR, use the designed LQR gain matrix
-            self.K = np.load('src/controller_design/K_fsf_pp.npy') 
+            self.K = np.load('src/controller_design/K_fsf_lqr.npy') 
         elif type == 'pole_placement':
             print('Pole Placement FSF')
             # If Pole Placement, use the designed Pole Placement gain matrix
@@ -46,7 +47,7 @@ class ControllerFSF(Controller):
     def law(self, t, z, params):
         m, g = params["m"], params["g"]
 
-        x_ref, y_ref = target_traj(t)
+        x_ref, y_ref = self.target_fn(t)
 
         # equilibrium conditions
         u_eq = np.array([m * g / 2, m * g / 2])

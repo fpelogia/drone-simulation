@@ -9,6 +9,7 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import streamlit as st
+from numpy import sin, cos, tan, tanh, pi
 
 import sys
 from pathlib import Path
@@ -50,7 +51,25 @@ with col1:
 
     st.space()
     st.write("### Controller Settings")
-    control_method_selected = st.selectbox("Select Control Method", ["Full State Feedback (FSF) with Pole Placement", "Full State Feedback (FSF) with LQR"])
+    control_method_selected = st.selectbox("Select Control Method", ["Full State Feedback (FSF) with LQR", "Full State Feedback (FSF) with Pole Placement"])
+
+    # Get desired control objective
+    objective = st.selectbox("Select Control Objective", ['Desired Trajectory (x(t), y(t))', 'Desired Point (x,y)'])
+
+    if(objective == 'Desired Point (x,y)'):
+        target_x = st.number_input('x', value=5)
+        target_y = st.number_input('y', value=5)
+        def target_traj(t):
+            return target_x, target_y
+        
+    elif(objective == 'Desired Trajectory (x(t), y(t))'):
+        traj_x = st.text_input('x(t)', value="2 * np.sin(t) + t", placeholder="2 * np.sin(t) + t")
+        traj_y = st.text_input('y(t)', value="5 * t", placeholder="20 * np.sin(t)")
+        st.info('Available special symbols: t, sin, cos, tan, tanh, pi' \
+        '\n\nUse * for multiplication, / for division, ** for power, and parentheses () for grouping.')
+        def target_traj(t):
+            return eval(traj_x), eval(traj_y)
+
 
     # map to accepted control method names (TO-DO: Improve this)
     control_method = "pole_placement" if control_method_selected == "Full State Feedback (FSF) with Pole Placement" else "lqr"
@@ -70,7 +89,7 @@ with col1:
     t = np.linspace(t_start, t_end, 100)
 
     # Instantiate the controller based on the selected control method
-    controller = ControllerFSF(type=control_method)
+    controller = ControllerFSF(type=control_method, target_fn=target_traj)
 
     # solve ODE
     sol = solve_ivp(drone_dynamics, (t_start, t_end), z0, t_eval=t, args=(params, controller), rtol=1e-3, atol=1e-6)
@@ -83,10 +102,10 @@ with col2:
 
     with st.spinner("Wait for it...", show_time=True):
         # plot trajectory
-        ani = plot_trajectory(x, y, theta, t, params)
+        ani = plot_trajectory(x, y, theta, t, params, target_fn=target_traj)
         st.iframe(ani.to_jshtml(), height=600)
 
-        fig = plot_results(t, x, y, theta)
+        fig = plot_results(t, x, y, theta, target_fn=target_traj)
         st.pyplot(fig)
     
 
