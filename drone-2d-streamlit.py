@@ -17,7 +17,7 @@ src_path = Path(__file__).resolve().parent / "src"
 if str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from controllers.controller import ControllerFSF
+from controllers.controller import ControllerFSF, ControllerPID
 from dynamics import drone_dynamics
 from plots import plot_results, plot_trajectory
 
@@ -51,7 +51,7 @@ with col1:
 
     st.space()
     st.write("### Controller Settings")
-    control_method_selected = st.selectbox("Select Control Method", ["Full State Feedback (FSF) with LQR", "Full State Feedback (FSF) with Pole Placement"])
+    control_method_selected = st.selectbox("Select Control Method", ["Full State Feedback (FSF) with LQR", "Full State Feedback (FSF) with Pole Placement", "PID Controller"])
 
     # Get desired control objective
     objective = st.selectbox("Select Control Objective", ['Desired Trajectory (x(t), y(t))', 'Desired Point (x,y)'])
@@ -71,8 +71,6 @@ with col1:
             return eval(traj_x), eval(traj_y)
 
 
-    # map to accepted control method names (TO-DO: Improve this)
-    control_method = "pole_placement" if control_method_selected == "Full State Feedback (FSF) with Pole Placement" else "lqr"
 
     params = {"m": m, "L": L, "g": g, "I": I}
 
@@ -81,7 +79,10 @@ with col1:
     y_dot0 = 0
     theta_dot0 = 0
 
-    z0 = [x0, y0, theta0, x_dot0, y_dot0, theta_dot0]
+    # initialize integral of errors
+    int_x0, int_y0, int_theta0 = 0, 0, 0
+
+    z0 = [x0, y0, theta0, x_dot0, y_dot0, theta_dot0, int_x0, int_y0, int_theta0]
 
     # time interval
     t_start = 0
@@ -89,13 +90,22 @@ with col1:
     t = np.linspace(t_start, t_end, 100)
 
     # Instantiate the controller based on the selected control method
-    controller = ControllerFSF(type=control_method, target_fn=target_traj)
+    if control_method_selected == "PID Controller":
+        # map to accepted control method names (TO-DO: Improve this)
+        #control_method = "pole_placement" if control_method_selected == "Full State Feedback (FSF) with Pole Placement" else "lqr"
+        #controller = ControllerFSF(type=control_method, target_fn=target_traj)
+        controller = ControllerPID(target_fn=target_traj)
+
+    else:
+        # map to accepted control method names (TO-DO: Improve this)
+        control_method = "pole_placement" if control_method_selected == "Full State Feedback (FSF) with Pole Placement" else "lqr"
+        controller = ControllerFSF(type=control_method, target_fn=target_traj)
 
     # solve ODE
     sol = solve_ivp(drone_dynamics, (t_start, t_end), z0, t_eval=t, args=(params, controller), rtol=1e-3, atol=1e-6)
 
     # unpack solution
-    x, y, theta, x_dot, y_dot, theta_dot = sol.y
+    x, y, theta, x_dot, y_dot, theta_dot, integral_err_x, integral_err_y, integral_err_theta = sol.y
     
 
 with col2:

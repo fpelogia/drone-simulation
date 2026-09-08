@@ -47,6 +47,9 @@ class ControllerFSF(Controller):
     def law(self, t, z, params):
         m, g = params["m"], params["g"]
 
+        # get only system state (ignore the integrators)
+        z = z[:6]
+
         x_ref, y_ref = self.target_fn(t)
 
         # equilibrium conditions
@@ -56,3 +59,45 @@ class ControllerFSF(Controller):
         u = u_eq - self.K @ (z - z_ref)
 
         return u  # [F1, F2]
+
+# Performance is not great... maybe I'll improve later
+class ControllerPID(Controller):
+    """Cascaded PID Controller for the 2D-Drone."""
+    
+    def __init__(self, target_fn=target_traj):
+        self.target_fn = target_fn
+        
+        self.k_x = {'p': 2.0,  'd': 1.5, 'i': 0.05} # Horizontal PID (set theta reference)
+        self.k_y = {'p': 12.0, 'd': 6.0, 'i': 0.5}  # Height PID
+        self.k_theta = {'p': 25.0, 'd': 8.0, 'i': 1.0}  # Attitude PID
+        
+    def law(self, t, z, params):
+        m, g, L = params["m"], params["g"], params["L"]
+        x, y, theta, x_dot, y_dot, theta_dot, int_x, int_y, int_theta = z
+        
+        x_ref, y_ref = self.target_fn(t)
+
+        # Height PID -> total force
+        e_y = y - y_ref
+        F_total = m * g - (self.k_y['p']*e_y + self.k_y['d']*y_dot + self.k_y['i']*int_y)
+        
+        # Horizontal PID -> theta reference
+        e_x = x - x_ref
+        # horizontal force is F_total * sin(theta) ~ F_total * theta
+        theta_ref = (self.k_x['p']*e_x + self.k_x['d']*x_dot + self.k_x['i']*int_x) / max((F_total/m), 1.0)
+        
+        # Attitude PID -> torque
+        e_theta = theta - theta_ref
+        torque = -(self.k_theta['p']*e_theta + self.k_theta['d']*theta_dot + self.k_theta['i']*int_theta)
+        
+        # F_total = F1 + F2
+        # torque is (F2 - F1) * (L/2)
+        delta_F = 2 * torque / L
+        
+        F1 = (F_total - delta_F) / 2
+        F2 = (F_total + delta_F) / 2
+
+        # engines cannot push down
+        F1, F2 = max(0, F1), max(0, F2)
+        
+        return np.array([F1, F2])

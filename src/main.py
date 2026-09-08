@@ -1,7 +1,7 @@
 
 import numpy as np
 from scipy.integrate import solve_ivp
-from controllers.controller import ControllerFSF
+from controllers.controller import ControllerFSF, ControllerPID
 from dynamics import drone_dynamics
 from plots import plot_results, plot_trajectory
 
@@ -15,14 +15,12 @@ def main():
     params = {"m": m, "L": L, "g": g, "I": I}
 
     # initial conditions
-    x0 = 0
-    y0 = 0
-    theta0 = 0
-    x_dot0 = 0
-    y_dot0 = 0
-    theta_dot0 = 0
+    x0, y0, theta0 = 0, 0, 0
+    x_dot0, y_dot0, theta_dot0 = 0, 0, 0
+    # initialize integral of errors
+    int_x0, int_y0, int_theta0 = 0, 0, 0
 
-    z0 = [x0, y0, theta0, x_dot0, y_dot0, theta_dot0]
+    z0 = [x0, y0, theta0, x_dot0, y_dot0, theta_dot0, int_x0, int_y0, int_theta0]
 
     # time interval
     t_start = 0
@@ -30,14 +28,15 @@ def main():
     t = np.linspace(t_start, t_end, 100)
 
     # Instantiate the controller
-    controller = ControllerFSF(type='lqr')
+    #controller = ControllerFSF(type='lqr')
+    controller = ControllerPID()
 
     # solve ODE
     sol = solve_ivp(drone_dynamics, (t_start, t_end), z0, t_eval=t, args=(params, controller), rtol=1e-3, atol=1e-6)
     print(sol)
 
     # unpack solution
-    x, y, theta, x_dot, y_dot, theta_dot = sol.y
+    x, y, theta, x_dot, y_dot, theta_dot, integral_err_x, integral_err_y, integral_err_theta = sol.y
 
     # plot results
     plot_results(t, x, y, theta)
