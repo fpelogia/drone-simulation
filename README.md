@@ -4,9 +4,13 @@ This project contains a basic 2D simulation of a drone using Python.
 
 The goal is to build a sandbox environment with different levels of modelling complexity, in order to test different control strategies and study the system dynamics.
 
-## Click here to run it interactively: [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://drone-simulation.streamlit.app/)
+## Click here to open the web version (streamlit): [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://drone-simulation.streamlit.app/)
 
 ![2d drone trajectory](https://github.com/fpelogia/drone-simulation/blob/main/trajectory.gif?raw=true)
+
+## There is also a local interactive version built with pygame! 
+![2d_drone_interactive](https://github.com/fpelogia/drone-simulation/blob/main/misc/drone_interactive.gif?raw=true)
+
 
 ## Features
 
