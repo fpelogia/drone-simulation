@@ -4,3 +4,5 @@ numpy
 matplotlib
 scipy
 control
+pygame
+pygame_gui

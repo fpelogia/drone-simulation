@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
+from controllers.controller import target_traj
 
 # plot results
-def plot_results(t, x, y, theta, target_fn):
+def plot_results(t, x, y, theta, target_fn=target_traj):
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     plt.subplots_adjust(hspace=0.5)
 
@@ -38,7 +38,7 @@ def plot_results(t, x, y, theta, target_fn):
     return fig
 
 # Plot trajectory (animated)
-def plot_trajectory(x, y, theta, t, params, target_fn):
+def plot_trajectory(x, y, theta, t, params, target_fn=target_traj):
 
     t_end = t[-1]
     
