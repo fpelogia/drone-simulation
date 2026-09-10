@@ -4,5 +4,5 @@ numpy
 matplotlib
 scipy
 control
-pygame
+pygame-ce
 pygame_gui
