@@ -63,7 +63,7 @@ with col1:
             return target_x, target_y
         
     elif(objective == 'Desired Trajectory (x(t), y(t))'):
-        traj_x = st.text_input('x(t)', value="2 * np.sin(t) + t", placeholder="2 * np.sin(t) + t")
+        traj_x = st.text_input('x(t)', value="2 * sin(t) + t", placeholder="2 * sin(t) + t")
         traj_y = st.text_input('y(t)', value="5 * t", placeholder="20 * np.sin(t)")
         st.info('Available special symbols: t, sin, cos, tan, tanh, pi' \
         '\n\nUse * for multiplication, / for division, ** for power, and parentheses () for grouping.')

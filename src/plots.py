@@ -5,7 +5,7 @@ from controllers.controller import target_traj
 
 # plot results
 def plot_results(t, x, y, theta, target_fn=target_traj):
-    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+    fig, axs = plt.subplots(2, 2, figsize=(8, 6))
     plt.subplots_adjust(hspace=0.5)
 
     axs[0, 0].plot(t, x)
