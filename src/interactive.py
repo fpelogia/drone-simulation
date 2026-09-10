@@ -221,7 +221,8 @@ while running:
         restart()
     if keys[pygame.K_RETURN]:
         if control_objective == 'point':
-            target_traj = lambda t: (target_x, target_y)
+            def target_traj(t):
+                return target_x/SCALE, (screen.get_height() - target_y)/SCALE 
         text_plot = normal_font.render(f"Please close the figure to continue the simulation.", True, "yellow")
         screen.blit(text_plot, (350, 15))
         # plot results
