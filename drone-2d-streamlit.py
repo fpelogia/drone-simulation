@@ -140,7 +140,7 @@ with col1:
         st.divider()
 
         st.markdown("### 2. Equilibrium Points")
-        st.markdown("$\dot{X} = 0$ with $\theta_e = 0$:")
+        st.latex(r"\dot{X} = 0\ with\  \theta_e = 0:")
         st.latex(
             r"""
         X_e = \begin{bmatrix} x_e \\ y_e \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}, \quad
